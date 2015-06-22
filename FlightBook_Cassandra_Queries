@@ -1,0 +1,152 @@
+CREATE KEYSPACE flight
+WITH REPLICATION = {'class':'SimpleStrategy','replication_factor':3};
+
+
+use flight;
+
+CREATE TABLE flight.flight_details (
+flight_id text,
+dep_time text,
+arr_time text,
+price decimal,
+seats decimal,
+dep_city text,
+arr_city text,
+PRIMARY KEY (flight_id));
+
+create index dep_city_idx on flight.flight_details (dep_city);
+create index arr_city_idx on flight.flight_details (arr_city);
+
+copy flight.flight_details from 'CF4.csv'; 
+with header = true;
+
+
+COPY flight.flight_details (flight_id, dep_time, arr_time, price, seats, dep_city,arr_city) FROM 'CF4.csv';
+
+COPY flight.flight_details FROM 'CF4.csv' WITH HEADER = true;
+
+
+ Timestamp datatype format - 2014-09-24 04:00:00+0530
+ 
+INSERT INTO flight.flight_details(flight_id,arr_city,arr_time,dep_city,dep_time,price,seats) 
+VALUES('SG355','Pune','2014-09-24','Indore','2014-09-24',17123,20);
+
+SELECT * from flight.flight_details;
+SELECT * from flight.flight_details where flight_id in ('SG386','6E484','9W482','6Q484','9W684','SG387','6E485','9W483','6Q485','9W685','SG388','6E486','9W484','6Q486','9W686','SG389','6E487','9W485','6Q487','9W687','SG390','6E488','9W486','6Q488','9W688','SG391','6E489','9W487','6Q489','9W689','SG392','6E490','9W488','6Q490','9W690','SG393','6E491','9W489','6Q491','9W691','SG394','6E492','9W490','6Q492','9W692','SG395','6E493','9W491','6Q493','9W693','SG396','6E494','9W492','6Q494','9W694','SG397','6E495','9W493','6Q495','9W695');
+delete from flight.flight_details where flight_id in ('SG386','6E484','9W482','6Q484','9W684','SG387','6E485','9W483','6Q485','9W685','SG388','6E486','9W484','6Q486','9W686','SG389','6E487','9W485','6Q487','9W687','SG390','6E488','9W486','6Q488','9W688','SG391','6E489','9W487','6Q489','9W689','SG392','6E490','9W488','6Q490','9W690','SG393','6E491','9W489','6Q491','9W691','SG394','6E492','9W490','6Q492','9W692','SG395','6E493','9W491','6Q493','9W693','SG396','6E494','9W492','6Q494','9W694','SG397','6E495','9W493','6Q495','9W695');
+
+delete from flight.flight_details where flight_id = 'SG355';
+
+copy flight.flight_details from 'CF4.csv' with header = true;
+
+=========================================
+
+CREATE TABLE flight.booking_1 (
+booking_date text,
+flight_id1 text,
+flight_id2 text,
+flight_id3 text,
+flight_id4 text,
+flight_id5 text,
+flight_id6 text,
+PRIMARY KEY (booking_date));
+
+create index flight_id1_idx1 on flight.booking_1 (flight_id1);
+
+INSERT INTO flight.booking_1(booking_date,flight_id1,flight_id1,flight_id1,flight_id1,flight_id1) 
+VALUES('2014-09-24','SG354','6E452','9W450','6Q452','9W652');
+
+delete from flight.booking_1 where booking_date = '2014-09-24';
+select * from flight.booking_1;
+
+select * from flight.booking_1 where 
+
+
+drop table flight.booking_1;
+
+copy flight.booking_1 from 'CF1.csv';
+
+================================================================
+
+CREATE TABLE flight.booking_2 (
+booking_date text,
+flight_id1 text,
+flight_id2 text,
+flight_id3 text,
+flight_id4 text,
+flight_id5 text,
+flight_id6 text,
+PRIMARY KEY (booking_date));
+
+create index flight_id1_idx2 on flight.booking_2 (flight_id1);
+
+select * from flight.booking_2;
+
+copy flight.booking_2 from 'CF2.csv';
+
+===================================================================
+
+CREATE TABLE flight.booking_3 (
+booking_date text,
+flight_id1 text,
+flight_id2 text,
+flight_id3 text,
+flight_id4 text,
+flight_id5 text,
+flight_id6 text,
+PRIMARY KEY (booking_date));
+
+create index flight_id1_idx3 on flight.booking_3 (flight_id1);
+
+select * from flight.booking_3;
+
+copy flight.booking_3 from 'CF3.csv';
+
+========================================================================
+
+
+CREATE TABLE flight.transaction (
+transaction_id text,
+booking_date text,
+flight_id text,
+booked_seats decimal,
+avail_seats decimal,
+PRIMARY KEY (transaction_id));
+
+create index flight_id1_idx4 on flight.transaction (flight_id);
+create index booking_date_idx on flight.transaction (booking_date);
+
+drop table flight.transaction;
+
+CREATE TABLE flight.transaction (
+transaction_id int,
+booking_date text,
+flight_id text,
+booked_seats int,
+PRIMARY KEY (transaction_id));
+
+create index flight_id1_idx4 on flight.transaction (flight_id);
+create index booking_date_idx on flight.transaction (booking_date);
+
+CREATE TABLE flight.transaction (
+transaction_id int,
+booking_date text,
+flight_id text,
+booked_seats int,
+PRIMARY KEY (transaction_id));
+
+create index flight_id1_idx4 on flight.transaction (flight_id);
+create index booking_date_idx on flight.transaction (booking_date);
+
+
+
+
+
+
+
+
+
+
+
+
+
