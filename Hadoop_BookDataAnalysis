@@ -1,0 +1,60 @@
+Transferred data files from local host to virtual machine using filezilla.
+
+Location of data files on virtual host:-
+
+[@localhost Project_Input]$ pwd
+/home/Desktop/Project_Input
+
+[abc@localhost Project_Input]$ ls -ltr
+total 117932
+-rw-rw-r--. 1 abc abc 30682276 Feb 12 10:55 BX-Book-Ratings.csv
+-rw-rw-r--. 1 abc abc 12284157 Feb 12 10:55 BX-Users.csv
+-rw-rw-r--. 1 abc abc 77787439 Feb 12 10:56 BX-Books.csv
+
+Input data corrected using below commands :-
+sed 's/&amp;/&/g' BX-Books.csv | sed -e '1d' |sed 's/;/###/g' | sed 's/"###"/";"/g' | sed 's/"//g' > BX-Books-New.csv
+
+sed 's/"//g' BX-Book-Ratings.csv | sed -e '1d' > BX-Book-Ratings-New.
+
+sed 's/"//g' BX-Users.csv | sed -e '1d' > BX-Users-New.csv
+
+Corrected files :-
+
+[abc@localhost Project_Input]$ ls -ltr *New*
+-rw-rw-r--. 1 abc abc 73488344 Feb 13 10:43 BX-Books-New.csv
+-rw-rw-r--. 1 abc abc 23783540 Feb 14 12:11 BX-Book-Ratings-New.csv
+-rw-rw-r--. 1 abc abc 10831141 Feb 14 12:16 BX-Users-New.csv
+
+Hive Queries :-
+CREATE DATABASE BooksDB;
+
+USE BooksDB;
+
+CREATE TABLE BookRatingDS (UserID INT, ISBN STRING, BookRating INT) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\;';
+
+LOAD DATA LOCAL INPATH '/home/abc/Desktop/Project_Input/BX-Book-Ratings-New.csv' OVERWRITE INTO table BookRatingDS;
+
+CREATE TABLE BooksDS (ISBN STRING, Title String, Author STRING, YearOfPublication INT, Publisher STRING, ImageURLS STRING, ImageURLM STRING, ImageURLL STRING ) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\;' STORED AS TEXTFILE;
+
+LOAD DATA LOCAL INPATH '/home/abc/Desktop/Project_Input/BX-Books-New.csv' OVERWRITE INTO table BooksDS;
+
+CREATE TABLE UsersDS (UserID INT, Location STRING, Age INT) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\;';
+
+LOAD DATA LOCAL INPATH '/home/abc/Desktop/Project_Input/BX-Users-New.csv' INTO table UsersDS;
+
+
+The frequency of books published each year :-
+
+hive -e 'SELECT YearOfPublication, COUNT(Title) from BooksDS GROUP BY YearOfPublication' > /home/abc/BookFreq.csv
+
+Year in which maximum number of books were published :-
+
+hive -e 'SELECT YearOfPublication, COUNT(Title) as cnt from BooksDS GROUP BY YearOfPublication SORT BY cnt DESC LIMIT 1' > /home/abc/MaxCount.csv
+
+How many books were published based on rating in the year 2002 :-
+
+hive -e 'SELECT br.BookRating, COUNT(Title) from BooksDS b JOIN BookRatingDS br ON (b.ISBN = br.ISBN) WHERE b.YearOfPublication = 2002 GROUP BY br.BookRating' > /home/abc/bookratcnt.csv
+
+Output files are present under 'output' folder.
+
+
